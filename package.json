@@ -4,11 +4,23 @@
   "description": "Cloning Youtube with VanillaJS and nodejs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon --exec babel-node init.js"
   },
   "author": "Shinwon Kim",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.1"
+    "@babel/cli": "^7.13.10",
+    "@babel/core": "^7.13.13",
+    "@babel/node": "^7.13.13",
+    "@babel/preset-env": "^7.13.12",
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
+    "express": "^4.16.1",
+    "helmet": "^4.4.1",
+    "morgan": "^1.10.0",
+    "pug": "^3.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
   }
 }
