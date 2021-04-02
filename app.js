@@ -19,6 +19,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
 app.use(localMiddleWare);
+app.use(function (req, res, next) {
+  res.setHeader(
+    "Content-Security-Policy",
+    "script-src 'self' https://archive.org"
+  );
+  return next();
+});
 
 // get이 아닌 use를 써준다. 누군가 /routes.home 경로로 접속하면
 //globalRouter 라우터를 모두 사용하겠다는것.
