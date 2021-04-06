@@ -99,6 +99,7 @@ dist
 # FuseBox cache
 .fusebox/
 
+
 # DynamoDB Local files
 .dynamodb/
 
@@ -116,3 +117,4 @@ dist
 .pnp.*
 
 package-lock.json
+uploads

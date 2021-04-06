@@ -3,7 +3,7 @@ import bodyParser from "body-parser";
 import coockieParser from "cookie-parser";
 import express from "express";
 import morgan from "morgan";
-import { localMiddleWare } from "./middleWare";
+import { localMiddleWare, uploadVideoMiddleware } from "./middleWare";
 import routes from "./routes";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
@@ -11,8 +11,14 @@ import globalRouter from "./routers/globalRouter";
 
 const app = express();
 
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  })
+);
 app.set("view engine", "pug");
+app.use("/uploads", express.static("uploads")); ///uploads로 접근하면 uplaod파일로 보낸다.
+app.use("/static", express.static("static")); ///uploads로 접근하면 uplaod파일로 보낸다.
 app.use(coockieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
