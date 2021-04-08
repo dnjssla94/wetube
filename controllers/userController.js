@@ -1,9 +1,11 @@
+import passport from "passport";
 import routes from "../routes";
+import User from "../models/User";
 
 export const getJoin = (req, res) => {
   res.render("join", { pageTitle: "Join" });
 };
-export const postJoin = (req, res) => {
+export const postJoin = async (req, res, next) => {
   console.log(req.body);
   const {
     body: { name, email, password, password2 },
@@ -13,17 +15,67 @@ export const postJoin = (req, res) => {
     res.render("join", { pageTitle: "Join" });
   } else {
     // To Do: Register User, Log user in
-    res.redirect(routes.home);
+    try {
+      const user = await User({
+        name,
+        email,
+      });
+      await User.register(user, password);
+      next();
+    } catch (error) {
+      console.log(error);
+      res.redirect(routes.home);
+    }
   }
 };
 export const getLogin = (req, res) =>
   res.render("login", { pageTitle: "Log In" });
-export const postLogin = (req, res) => {
+
+export const postLogin = passport.authenticate("local", {
+  successRedirect: routes.home,
+  failureRedirect: routes.login,
+});
+
+export const githubLogin = passport.authenticate("github");
+export const postGithubLogin = (req, res) => {
   res.redirect(routes.home);
 };
 
+export const githubLoginCallback = async (
+  accessToken,
+  refreshToken,
+  profile,
+  cb
+) => {
+  console.log(accessToken, refreshToken, profile, cb);
+  const {
+    _json: { id, avatar_url: avatarUrl, name, email },
+  } = profile;
+  try {
+    const user = await User.findOne({ email });
+    if (user) {
+      user.githubId = id;
+      user.avatarUrl = avatarUrl;
+      user.name = name;
+      user.save();
+      return cb(null, user);
+    } else {
+      const newUser = await User.create({
+        email,
+        name,
+        githubId: id,
+        avatarUrl,
+      });
+      return cb(null, newUser);
+    }
+  } catch (error) {
+    console.log("hahagogogogo");
+    return cb(error);
+  }
+};
+
 export const logout = (req, res) => {
-  // To do Process Logout
+  req.logout();
   res.redirect(routes.home);
 };
 export const editProfile = (req, res) =>
@@ -32,3 +84,7 @@ export const changePassword = (req, res) =>
   res.render("changePassword", { pageTitle: "Change Password" });
 export const userDetail = (req, res) =>
   res.render("userDetail", { pageTitle: "User Detail" });
+
+export const getMe = (req, res) => {
+  res.render("userDetail", { pageTitle: "User Detail", user: req.user });
+};

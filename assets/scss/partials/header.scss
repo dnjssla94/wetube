@@ -2,7 +2,7 @@
   background-color: $red;
   margin-bottom: 50px;
   .header__wrapper {
-    padding: 5px 0px;
+    padding: 5px 20px;
     width: 100%;
     margin: 0 auto;
     max-width: 1200px;
@@ -12,7 +12,7 @@
     .header__column {
       i {
         color: white;
-        font-size: 40px;
+        font-size: 50px;
       }
       &:nth-child(2) {
         width: 100%;
@@ -39,6 +39,7 @@
           font-size: 14px;
           color: $black;
           font-weight: 600;
+          max-width: none;
           &::placeholder {
             font-weight: 300;
             color: rgba(0, 0, 0, 0.7);

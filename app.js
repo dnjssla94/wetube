@@ -1,13 +1,18 @@
 import helmet from "helmet";
-import bodyParser from "body-parser";
+//import bodyParser from "body-parser";
 import coockieParser from "cookie-parser";
+import mongoose from "mongoose";
 import express from "express";
 import morgan from "morgan";
+import passport from "passport";
+import session from "express-session";
+import MongoStore from "connect-mongo";
 import { localMiddleWare, uploadVideoMiddleware } from "./middleWare";
 import routes from "./routes";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
 import globalRouter from "./routers/globalRouter";
+import "./passport";
 
 const app = express();
 
@@ -23,6 +28,16 @@ app.use(coockieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
+app.use(
+  session({
+    secret: process.env.RANDOM_KEY,
+    resave: true,
+    saveUninitialized: false,
+    store: MongoStore.create({ mongoUrl: process.env.MONGO_URL }),
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(localMiddleWare);
 app.use(function (req, res, next) {
