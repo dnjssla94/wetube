@@ -36,7 +36,10 @@ export const postLogin = passport.authenticate("local", {
   failureRedirect: routes.login,
 });
 
+//===============================github로그인
+
 export const githubLogin = passport.authenticate("github");
+
 export const postGithubLogin = (req, res) => {
   res.redirect(routes.home);
 };
@@ -69,8 +72,44 @@ export const githubLoginCallback = async (
       return cb(null, newUser);
     }
   } catch (error) {
-    console.log("hahagogogogo");
+    //console.log("hahagogogogo");
     return cb(error);
+  }
+};
+//=============facebookLogin==================
+
+// export const facebookLogin = passport.authenticate("facebook");
+
+// export const facebookLoginCallback = (
+//   accessToken,
+//   refreshToken,
+//   profile,
+//   cb
+// ) => {
+//   console.log(accessToken, refreshToken, profile, cb);
+// };
+// export const postfacebookLogin = (req, res) => {
+//   res.redirect(routes.home);
+// };
+
+export const getEditProfile = (req, res) =>
+  res.render("editProfile", { pageTitle: "Edit Profile" });
+
+export const postEditProfile = async (req, res) => {
+  const {
+    user: { _id: id },
+    body: { name, email },
+    file,
+  } = req;
+  try {
+    await User.findByIdAndUpdate(id, {
+      name,
+      email,
+      avatarUrl: file ? file.path : req.user.avatarUrl,
+    });
+    res.redirect(routes.me);
+  } catch (error) {
+    res.redirect(routes.editProfile);
   }
 };
 
@@ -78,13 +117,50 @@ export const logout = (req, res) => {
   req.logout();
   res.redirect(routes.home);
 };
-export const editProfile = (req, res) =>
-  res.render("editProfile", { pageTitle: "Edit Profile" });
-export const changePassword = (req, res) =>
-  res.render("changePassword", { pageTitle: "Change Password" });
-export const userDetail = (req, res) =>
-  res.render("userDetail", { pageTitle: "User Detail" });
 
-export const getMe = (req, res) => {
-  res.render("userDetail", { pageTitle: "User Detail", user: req.user });
+export const getChangePassword = (req, res) =>
+  res.render("changePassword", { pageTitle: "Change Password" });
+
+export const postChangePassword = async (req, res) => {
+  const {
+    body: { oldPassword, newPassword, newPassword1 },
+  } = req;
+  try {
+    if (newPassword !== newPassword1) {
+      res.status(400);
+      console.log("not same");
+      res.redirect(`/users${routes.changePassword}`);
+      return;
+    }
+    const user = await User.findById(req.user._id);
+    //console.log(req.user);
+    await user.changePassword(oldPassword, newPassword);
+    res.redirect(routes.me);
+  } catch (error) {
+    console.log(error);
+    res.redirect(`/users${routes.changePassword}`);
+  }
+};
+
+export const userDetail = async (req, res) => {
+  const {
+    params: { id },
+  } = req;
+  try {
+    console.log(req.params);
+    const user = await User.findById(id).populate("videos");
+    console.log(user);
+    res.render("userDetail", { pageTitle: "User Detail", user });
+  } catch (error) {
+    res.redirect(routes.home);
+  }
+};
+
+export const getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).populate("videos");
+    res.render("userDetail", { pageTitle: "User Detail", user });
+  } catch (error) {
+    res.redirect(routes.home);
+  }
 };
