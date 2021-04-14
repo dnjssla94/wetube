@@ -1,6 +1,122 @@
 /******/ (function() { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./assets/js/videoPlayer.js":
+/*!**********************************!*\
+  !*** ./assets/js/videoPlayer.js ***!
+  \**********************************/
+/***/ (function() {
+
+var videoContainer = document.getElementById("jsVideoPlayer");
+var videoPlayer = document.querySelector("#jsVideoPlayer video");
+var playBtn = document.getElementById("jsPlayButton");
+var volumeBtn = document.getElementById("jsVolumeButton");
+var fullScrnBtn = document.getElementById("jsFullScreen");
+var currentTime = document.getElementById("currentTime");
+var totalTime = document.getElementById("totalTime");
+
+function handlePlayClick() {
+  if (videoPlayer.paused) {
+    videoPlayer.play();
+    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+  } else {
+    videoPlayer.pause();
+    playBtn.innerHTML = '<i class="fas fa-play"></i>';
+  }
+}
+
+function handleVolumeClick() {
+  if (videoPlayer.muted) {
+    videoPlayer.muted = false;
+    volumeBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+  } else {
+    videoPlayer.muted = true;
+    volumeBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+  }
+}
+
+function exitFullScreen() {
+  fullScrnBtn.innerHTML = '<i class="fas fa-expand"></i>';
+  fullScrnBtn.addEventListener("click", goFullScreen);
+
+  if (document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if (document.mozCancelFullScreen) {
+    document.mozCancelFullScreen();
+  } else if (document.webkitExitFullscreen) {
+    document.webkitExitFullscreen();
+  } else if (document.msExitFullscreen) {
+    document.msExitFullscreen();
+  }
+}
+
+function goFullScreen() {
+  // 웹킷은 사파리,크롬이 지원하지 않는 함수를 쓰게해주는 확장팩이다. firefox는 mos, ie는 ms가 같은 기능.
+  if (videoContainer.requestFullscreen) {
+    videoContainer.requestFullscreen();
+  } else if (videoContainer.mozRequestFullScreen) {
+    videoContainer.mozRequestFullScreen();
+  } else if (videoContainer.webkitRequestFullscreen) {
+    videoContainer.webkitRequestFullscreen();
+  } else if (videoContainer.msRequestFullscreen) {
+    videoContainer.msRequestFullscreen();
+  }
+
+  fullScrnBtn.innerHTML = '<i class="fas fa-compress"></i>';
+  fullScrnBtn.removeEventListener("click", goFullScreen);
+  fullScrnBtn.addEventListener("click", exitFullScreen);
+}
+
+var formatDate = function formatDate(seconds) {
+  var secondsNumber = parseInt(seconds, 10);
+  var hours = Math.floor(secondsNumber / 3600);
+  var minutes = Math.floor((secondsNumber - hours * 3600) / 60);
+  var totalSeconds = secondsNumber - hours * 3600 - minutes * 60;
+
+  if (hours < 10) {
+    hours = "0".concat(hours);
+  }
+
+  if (minutes < 10) {
+    minutes = "0".concat(minutes);
+  }
+
+  if (totalSeconds < 10) {
+    totalSeconds = "0".concat(totalSeconds);
+  }
+
+  return "  ".concat(hours, ":").concat(minutes, ":").concat(totalSeconds);
+};
+
+function getCurrentTime() {
+  currentTime.innerHTML = formatDate(Math.floor(videoPlayer.currentTime));
+}
+
+function setTotalTime() {
+  var totalTimeString = formatDate(videoPlayer.duration);
+  totalTime.innerHTML = totalTimeString;
+  setInterval(getCurrentTime, 1000);
+}
+
+function handleEnded() {
+  videoPlayer.currentTime = 0;
+  playBtn.innerHTML = '<i class="fas fa-play"></i>';
+}
+
+function init() {
+  playBtn.addEventListener("click", handlePlayClick);
+  volumeBtn.addEventListener("click", handleVolumeClick);
+  fullScrnBtn.addEventListener("click", goFullScreen);
+  videoPlayer.addEventListener("loadedmetadata", setTotalTime);
+  videoPlayer.addEventListener("ended", handleEnded);
+}
+
+if (videoContainer) {
+  init();
+}
+
+/***/ }),
+
 /***/ "./node_modules/@babel/polyfill/lib/noConflict.js":
 /*!********************************************************!*\
   !*** ./node_modules/@babel/polyfill/lib/noConflict.js ***!
@@ -11084,6 +11200,35 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	!function() {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = function(module) {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				function() { return module['default']; } :
+/******/ 				function() { return module; };
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	!function() {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = function(exports, definition) {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	!function() {
+/******/ 		__webpack_require__.o = function(obj, prop) { return Object.prototype.hasOwnProperty.call(obj, prop); }
+/******/ 	}();
+/******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
 /******/ 	!function() {
 /******/ 		// define __esModule on exports
@@ -11129,32 +11274,10 @@ _global["default"]._babelPolyfill = true;
   \***************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _scss_styles_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../scss/styles.scss */ "./assets/scss/styles.scss");
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
+/* harmony import */ var _videoPlayer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./videoPlayer */ "./assets/js/videoPlayer.js");
+/* harmony import */ var _videoPlayer__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_videoPlayer__WEBPACK_IMPORTED_MODULE_1__);
 
 
-var something = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-    return regeneratorRuntime.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            console.log("sometihing");
-
-          case 1:
-          case "end":
-            return _context.stop();
-        }
-      }
-    }, _callee);
-  }));
-
-  return function something() {
-    return _ref.apply(this, arguments);
-  };
-}();
 }();
 /******/ })()
 ;
