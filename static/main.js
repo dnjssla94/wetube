@@ -10,10 +10,11 @@
 var videoContainer = document.getElementById("jsVideoPlayer");
 var videoPlayer = document.querySelector("#jsVideoPlayer video");
 var playBtn = document.getElementById("jsPlayButton");
-var volumeBtn = document.getElementById("jsVolumeButton");
+var volumeBtn = document.getElementById("jsVolumeBtn");
 var fullScrnBtn = document.getElementById("jsFullScreen");
 var currentTime = document.getElementById("currentTime");
 var totalTime = document.getElementById("totalTime");
+var volumeRange = document.getElementById("jsVolume");
 
 function handlePlayClick() {
   if (videoPlayer.paused) {
@@ -28,9 +29,11 @@ function handlePlayClick() {
 function handleVolumeClick() {
   if (videoPlayer.muted) {
     videoPlayer.muted = false;
+    volumeRange.value = videoPlayer.volume;
     volumeBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
   } else {
     videoPlayer.muted = true;
+    volumeRange.value = 0;
     volumeBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
   }
 }
@@ -103,15 +106,120 @@ function handleEnded() {
   playBtn.innerHTML = '<i class="fas fa-play"></i>';
 }
 
+function handleDrag(event) {
+  console.log(event.target.value);
+  var value = event.target.value;
+  videoPlayer.volume = value;
+
+  if (value >= 0.7) {
+    volumeBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+  } else if (value >= 0.3) {
+    volumeBtn.innerHTML = '<i class="fas fa-volume-down"></i>';
+  } else {
+    volumeBtn.innerHTML = '<i class="fas fa-volume-off"></i>';
+  }
+}
+
 function init() {
+  videoPlayer.voume = 0.5;
   playBtn.addEventListener("click", handlePlayClick);
   volumeBtn.addEventListener("click", handleVolumeClick);
   fullScrnBtn.addEventListener("click", goFullScreen);
   videoPlayer.addEventListener("loadedmetadata", setTotalTime);
   videoPlayer.addEventListener("ended", handleEnded);
+  volumeRange.addEventListener("input", handleDrag);
 }
 
 if (videoContainer) {
+  init();
+}
+
+/***/ }),
+
+/***/ "./assets/js/videoRecorder.js":
+/*!************************************!*\
+  !*** ./assets/js/videoRecorder.js ***!
+  \************************************/
+/***/ (function() {
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+var recorderContainer = document.getElementById("jsRecorderContainer");
+var recordBtn = document.getElementById("jsRecordBtn");
+var videoPreview = document.getElementById("jsVideoPreview");
+var streamObject;
+
+var handleVideoData = function handleVideoData(event) {
+  console.log("what event");
+  console.log(event);
+};
+
+var startRecording = function startRecording() {
+  console.log(streamObject);
+  var videoRecoder = new MediaRecorder(streamObject);
+  videoRecoder.start();
+  videoRecoder.ondataavailable("dataavailable", handleVideoData);
+};
+
+var getVideo = /*#__PURE__*/function () {
+  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+    var stream;
+    return regeneratorRuntime.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            _context.prev = 0;
+            _context.next = 3;
+            return navigator.mediaDevices.getUserMedia({
+              audio: true,
+              video: {
+                width: 1280,
+                height: 720
+              }
+            });
+
+          case 3:
+            stream = _context.sent;
+            // console.log(stream);
+            videoPreview.srcObject = stream;
+            videoPreview.muted = true;
+            videoPreview.play();
+            streamObject = stream;
+            recordBtn.innerHTML = "Stop Recording";
+            startRecording();
+            _context.next = 15;
+            break;
+
+          case 12:
+            _context.prev = 12;
+            _context.t0 = _context["catch"](0);
+            recordBtn.innerHTML = "😢Can't record video";
+
+          case 15:
+            _context.prev = 15;
+            recordBtn.removeEventListener("click", startRecording);
+            return _context.finish(15);
+
+          case 18:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee, null, [[0, 12, 15, 18]]);
+  }));
+
+  return function getVideo() {
+    return _ref.apply(this, arguments);
+  };
+}();
+
+function init() {
+  recordBtn.addEventListener("click", getVideo);
+}
+
+if (recorderContainer) {
   init();
 }
 
@@ -11276,6 +11384,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _scss_styles_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../scss/styles.scss */ "./assets/scss/styles.scss");
 /* harmony import */ var _videoPlayer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./videoPlayer */ "./assets/js/videoPlayer.js");
 /* harmony import */ var _videoPlayer__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_videoPlayer__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _videoRecorder__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./videoRecorder */ "./assets/js/videoRecorder.js");
+/* harmony import */ var _videoRecorder__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_videoRecorder__WEBPACK_IMPORTED_MODULE_2__);
+
 
 
 }();

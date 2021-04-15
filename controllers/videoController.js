@@ -1,6 +1,7 @@
 //
 import routes from "../routes";
 import Video from "../models/Video";
+// import
 
 //render 이라는 함수가 views 폴더에서 파일명이 home이고 확장자가 Pug인 템플릿파일을 찾은후에 보여줄것.
 export const home = async (req, res) => {

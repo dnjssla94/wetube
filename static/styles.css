@@ -453,8 +453,21 @@ input[type="submit"] {
          -moz-box-align: center;
           -ms-flex-align: center;
               align-items: center; }
-      .videoPlayer .videoPlayer__controls .videoPlayer__column:first-child > span:first-child {
+      .videoPlayer .videoPlayer__controls .videoPlayer__column:first-child #jsVolumeBtn {
         margin-right: 10px; }
+    .videoPlayer .videoPlayer__controls .videoPlayer__volume {
+      position: absolute;
+      padding: 0;
+      opacity: 1;
+      top: -60px;
+      left: -25px;
+      -webkit-transform: rotate(-90deg);
+         -moz-transform: rotate(-90deg);
+          -ms-transform: rotate(-90deg);
+           -o-transform: rotate(-90deg);
+              transform: rotate(-90deg);
+      z-index: 10;
+      width: 80px; }
     .videoPlayer .videoPlayer__controls .videoPlayer__column:last-child {
       justify-self: end; }
     .videoPlayer .videoPlayer__controls .videoPlayer__column:nth-child(2) {
@@ -462,6 +475,15 @@ input[type="submit"] {
     .videoPlayer .videoPlayer__controls i {
       font-size: 25px;
       cursor: pointer; }
+
+.record-container {
+  width: 100%;
+  max-width: 320px;
+  margin-bottom: 50px; }
+  .record-container video {
+    width: 100%;
+    background-color: #444444;
+    margin: 0 0 20px 0; }
 
 .video-detail__container {
   display: -webkit-box;
