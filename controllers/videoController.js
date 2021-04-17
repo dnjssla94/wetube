@@ -1,7 +1,6 @@
-//
 import routes from "../routes";
 import Video from "../models/Video";
-// import
+import Comment from "../models/Comment";
 
 //render 이라는 함수가 views 폴더에서 파일명이 home이고 확장자가 Pug인 템플릿파일을 찾은후에 보여줄것.
 export const home = async (req, res) => {
@@ -36,9 +35,12 @@ export const videoDetail = async (req, res) => {
     params: { id },
   } = req;
   try {
-    const video = await await Video.findById(id).populate("creator"); //populate():전체 객체를 가져오는 함수.
+    const video = await Video.findById(id)
+      .populate("creator")
+      .populate("comments"); //populate():전체 객체를 가져오는 함수.
+    const commentList = await Comment.find().populate("creator");
     //console.log("here v detail", video);
-    res.render("videoDetail", { pageTitle: video.title, video });
+    res.render("videoDetail", { pageTitle: video.title, video, commentList });
   } catch (error) {
     console.log(error);
     res.redirect(routes.home);
@@ -60,7 +62,7 @@ export const postUpload = async (req, res) => {
     description,
     creator: req.user._id,
   });
-  console.log(newVideo);
+  //console.log(newVideo);
   req.user.videos.push(newVideo.id);
   req.user.save();
   res.redirect(routes.videoDetail(newVideo.id));
@@ -112,3 +114,53 @@ export const deleteVideo = async (req, res) => {
   res.redirect(routes.home);
 };
 //  res.render("deleteVideo", { pageTitle: "Delete Video" });
+
+//Register Video View
+
+export const postRegisterView = async (req, res) => {
+  const {
+    params: { id },
+  } = req;
+  try {
+    const video = await Video.findById(id);
+    video.views += 1;
+    video.save();
+    res.status(200);
+  } catch (error) {
+    res.status(400);
+    res.end();
+  } finally {
+    res.end();
+  }
+};
+
+// Add Comment
+
+export const postAddComment = async (req, res) => {
+  const {
+    params: { id },
+    body: { comment },
+    user,
+  } = req;
+  try {
+    console.log("user: ");
+    console.log(user.id);
+    const video = await Video.findById(id);
+    const newComment = await Comment.create({
+      text: comment,
+      creator: user.id,
+    });
+    console.log("video id: ");
+    console.log(req.params.id);
+    console.log("__user: ");
+    console.log(newComment);
+    video.comments.push(newComment.id);
+    video.save();
+  } catch (error) {
+    console.log("Posting Comment Error");
+    res.status(400);
+  } finally {
+    res.redirect(routes.videoDetail(req.params.id));
+    res.end();
+  }
+};

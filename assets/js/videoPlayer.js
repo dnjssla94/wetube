@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const videoContainer = document.getElementById("jsVideoPlayer");
 const videoPlayer = document.querySelector("#jsVideoPlayer video");
 const playBtn = document.getElementById("jsPlayButton");
@@ -6,6 +8,12 @@ const fullScrnBtn = document.getElementById("jsFullScreen");
 const currentTime = document.getElementById("currentTime");
 const totalTime = document.getElementById("totalTime");
 const volumeRange = document.getElementById("jsVolume");
+
+const registerView = () => {
+  //db를 변경할 의도를 갖고있을때는 post를 사용해야한다.
+  const videoId = window.location.href.split("videos/")[1];
+  fetch(`/api/${videoId}/view`, { method: "POST" });
+};
 
 function handlePlayClick() {
   if (videoPlayer.paused) {
@@ -88,6 +96,7 @@ function setTotalTime() {
 function handleEnded() {
   videoPlayer.currentTime = 0;
   playBtn.innerHTML = '<i class="fas fa-play"></i>';
+  registerView();
 }
 function handleDrag(event) {
   console.log(event.target.value);

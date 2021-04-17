@@ -1,19 +1,37 @@
+const { set } = require("mongoose");
+
 const recorderContainer = document.getElementById("jsRecorderContainer");
 const recordBtn = document.getElementById("jsRecordBtn");
 const videoPreview = document.getElementById("jsVideoPreview");
 
 let streamObject;
+let videoRecoder;
 
 const handleVideoData = (event) => {
-  console.log("what event");
-  console.log(event);
+  const { data: videoFile } = event;
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(videoFile);
+  link.download = "recordedd.webm";
+  document.body.appendChild(link);
+  link.click();
+
+  console.log("요기!!!!");
+};
+const stopRecording = () => {
+  videoRecoder.stop();
+  recordBtn.removeEventListener("click", stopRecording);
+  recordBtn.addEventListener("click", getVideo);
+  recordBtn.innerText = "Start Start Start Start Recording";
+  recordBtn.innerHTML = "Start Recording";
 };
 
 const startRecording = () => {
   console.log(streamObject);
-  const videoRecoder = new MediaRecorder(streamObject);
+  videoRecoder = new MediaRecorder(streamObject);
   videoRecoder.start();
-  videoRecoder.ondataavailable("dataavailable", handleVideoData);
+  videoRecoder.addEventListener("dataavailable", handleVideoData);
+  recordBtn.addEventListener("click", stopRecording);
+  //setTimeout(() => videoRecoder.stop(), 5000);
 };
 
 const getVideo = async () => {
@@ -32,7 +50,7 @@ const getVideo = async () => {
   } catch (error) {
     recordBtn.innerHTML = "😢Can't record video";
   } finally {
-    recordBtn.removeEventListener("click", startRecording);
+    recordBtn.removeEventListener("click", getVideo);
   }
 };
 
