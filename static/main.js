@@ -89,6 +89,66 @@ if (addCommentForm) {
 
 /***/ }),
 
+/***/ "./assets/js/deleteComment.js":
+/*!************************************!*\
+  !*** ./assets/js/deleteComment.js ***!
+  \************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+var deleteComment = document.getElementById("jsDeleteComment");
+var deleteCommentBtn = document.getElementById("jsDeleteCommentBtn"); // const increaseNumber = () => {
+//   commentNumber.innerHTML = parseInt(commentNumber.innerHTML, 10) + 1;
+// };
+// const addComment = (comment) => {
+//   const li = document.createElement("li");
+//   const span = document.createElement("span");
+//   span.innerHTML = comment;
+//   li.appendChild(span);
+//   commentList.prepend(li);
+//   increaseNumber();
+// };
+// const sendComment = async (comment) => {
+//   const videoId = window.location.href.split("videos/")[1];
+//   const response = await axios({
+//     url: `/api/${videoId}/comment`,
+//     method: "POST",
+//     data: { comment },
+//   });
+//   if (response.status === 200) {
+//     addComment(comment);
+//   }
+// };
+// const deleteCommentBtn = (event) => {
+//   event.preventDefault(); // 새로고침되는것을 막는다.
+//   const response = await axios({
+//     url: `/api/${videoId}/comment`,
+//     method: "GET",
+//     data: { comment },
+//   });
+// };
+
+var handleClick = function handleClick(event) {
+  event.preventDefault();
+  var commentElementBtn = deleteComment.querySelector("#jsDeleteCommentBtn");
+  var parent = commentElementBtn.parentNode;
+  parent.parentNode.removeChild(parent);
+};
+
+function init() {
+  deleteComment.addEventListener("click", handleClick);
+}
+
+if (deleteCommentBtn) {
+  init();
+}
+
+/***/ }),
+
 /***/ "./assets/js/videoPlayer.js":
 /*!**********************************!*\
   !*** ./assets/js/videoPlayer.js ***!
@@ -14301,6 +14361,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _videoRecorder__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./videoRecorder */ "./assets/js/videoRecorder.js");
 /* harmony import */ var _videoRecorder__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_videoRecorder__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _addComment__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./addComment */ "./assets/js/addComment.js");
+/* harmony import */ var _deleteComment__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./deleteComment */ "./assets/js/deleteComment.js");
+
 
 
 

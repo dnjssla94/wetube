@@ -160,7 +160,12 @@ export const postAddComment = async (req, res) => {
     console.log("Posting Comment Error");
     res.status(400);
   } finally {
-    res.redirect(routes.videoDetail(req.params.id));
+    //res.redirect(routes.videoDetail(req.params.id));
     res.end();
   }
+};
+export const postDeleteComment = async (req, res) => {
+  const {
+    params: { id },
+  } = req;
 };
